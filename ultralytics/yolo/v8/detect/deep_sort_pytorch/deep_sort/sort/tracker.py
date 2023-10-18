@@ -39,14 +39,11 @@ class Tracker:
 ''' ********************************************************************************************
     ********************************************************************************************
 '''
-        for track_idx in unmatched_tracks:
-            self.unmatched_tracks_features.append(self.tracks[track_idx].features)
-
-        all_features = [num for sublist in self.unmatched_tracks_features for num in sublist]
-        X = np.array(all_features).reshape(-1, 1)
-        cluster = DBSCAN(eps=0.5, min_samples=4, metric='euclidean', n_jobs=8).fit(X)
-        labels = cluster.labels_
-        print(labels)
+        if all_features:
+          X = np.array(all_features).reshape(-1, 1)
+          cluster = DBSCAN(eps=0.5, min_samples=4, metric='euclidean', n_jobs=8).fit(X)
+          labels = cluster.labels_
+          print('标签长度', len(labels))
 
 
         # Update track set.
