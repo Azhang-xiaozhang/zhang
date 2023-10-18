@@ -1,8 +1,5 @@
-# vim: expandtab:ts=4:sw=4
-
 from __future__ import absolute_import
 import numpy as np
-
 from . import kalman_filter
 from . import linear_assignment
 from . import iou_matching
@@ -11,34 +8,7 @@ from sklearn.cluster import DBSCAN
 
 
 class Tracker:
-    """
-    This is the multi-target tracker.
-
-    Parameters
-    ----------
-    metric : nn_matching.NearestNeighborDistanceMetric
-        A distance metric for measurement-to-track association.
-    max_age : int
-        Maximum number of missed misses before a track is deleted.
-    n_init : int
-        Number of consecutive detections before the track is confirmed. The
-        track state is set to `Deleted` if a miss occurs within the first
-        `n_init` frames.
-
-    Attributes
-    ----------
-    metric : nn_matching.NearestNeighborDistanceMetric
-        The distance metric used for measurement to track association.
-    max_age : int
-        Maximum number of missed misses before a track is deleted.
-    n_init : int
-        Number of frames that a track remains in initialization phase.
-    kf : kalman_filter.KalmanFilter
-        A Kalman filter to filter target trajectories in image space.
-    tracks : List[Track]
-        The list of active tracks at the current time step.
-
-    """
+    
 
     def __init__(self, metric, max_iou_distance=0.7, max_age=100, n_init=3):
         self.metric = metric
@@ -53,10 +23,7 @@ class Tracker:
         self.unmatched_tracks_features = []
 
     def predict(self):
-        """Propagate track state distributions one time step forward.
 
-        This function should be called once every time step, before `update`.
-        """
         for track in self.tracks:
             track.predict(self.kf)
 
@@ -66,19 +33,12 @@ class Tracker:
             track.mark_missed()
 
     def update(self, detections):
-        """Perform measurement update and track management.
 
-        Parameters
-        ----------
-        detections : List[deep_sort.detection.Detection]
-            A list of detections at the current time step.
-        """
         # Run matching cascade.
         matches, unmatched_tracks, unmatched_detections = self._match(detections)
 ''' ********************************************************************************************
     ********************************************************************************************
 '''
-
         for track_idx in unmatched_tracks:
             self.unmatched_tracks_features.append(self.tracks[track_idx].features)
 
